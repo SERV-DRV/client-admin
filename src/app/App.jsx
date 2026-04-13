@@ -5,14 +5,17 @@ import { Toaster, toast } from 'react-hot-toast';
 function App() {
   return(
     <>
-      <Toaster />
-
-      <button 
-      onClick={()=>{toast('¡Hola, soy una notificación!')}}
-      style={{marginBottom: '20px'}}
-      >
-        Mostrar notificación
-      </button>
+      <Toaster
+      position="top-center"
+      toastOptions={{
+        style: {
+          fontFamily:"inherit",
+          fontWeight: 600,
+          fontSize: "1rem",
+          borderRadius: "8px",
+          }
+      }}
+      />
 
       <AppRoutes />
     </>
