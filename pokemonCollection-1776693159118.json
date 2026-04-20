@@ -1,0 +1,9 @@
+"vscode-pokemon.defaultPokemon": [
+    { "type": "rayquaza", "shiny": true },
+    { "type": "latios", "shiny": true },
+    { "type": "latias", "shiny": true },
+    { "type": "charizard", "shiny": true },
+    { "type": "lucario", "shiny": true },
+    { "type": "ho-oh", "shiny": true }
+],
+"vscode-pokemon.shinyOdds": 1
