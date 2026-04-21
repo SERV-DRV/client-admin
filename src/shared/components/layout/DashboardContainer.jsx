@@ -14,7 +14,7 @@ export const DashboardContainer = ({}) => {
 
                 <main className="flex-1 p-6">
                     {/* Children */}
-                    Contenido del menú
+                    Contenido de la página del dashboard
                 </main>
             </div>
         </div>

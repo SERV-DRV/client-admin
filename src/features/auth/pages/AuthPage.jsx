@@ -75,14 +75,6 @@ const AuthPage = () => {
             </button>
           ) : (
             <>
-              {isLogin && (
-                <button
-                  onClick={() => setIsForgot(true)}
-                  className="block w-full text-sm text-gray-500 hover:text-blue-600 transition"
-                >
-                  ¿Olvidaste tu contraseña?
-                </button>
-              )}
 
               <p className="text-sm text-gray-600">
                 {isLogin ? "¿No tienes cuenta?" : "¿Ya tienes cuenta?"}{" "}
