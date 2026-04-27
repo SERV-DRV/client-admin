@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { LoginForm } from "../components/LoginForm";
+import imgLogo from "../../../assets/img/kinal_sports.png";
 
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -17,7 +18,7 @@ const AuthPage = () => {
         {/* Logo */}
         <div className="flex justify-center mb-6">
           <img
-            src="/src/assets/img/kinal_sports.png"
+            src={imgLogo}
             alt="Kinal Sport"
             className="h-20 w-auto"
           />
