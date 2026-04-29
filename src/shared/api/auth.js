@@ -19,11 +19,11 @@ export const resetPassword = async (token, newPassword) => {
 };
  
 export const verifyEmail = async (token) => {
-  return await axiosAuth.post("/auth/verify-email", { token });
+  return await axiosAuth.post("/api/v1/auth/verify-email", { token });
 };
  
 export const updateUserRole = async (userId, roleName) => {
-  return await axiosAuth.put(`/users/${userId}/role`, { roleName });
+  return await axiosAuth.put(`/api/v1/users/${userId}/role`, { roleName });
 };
  
 export const getAllUsers = async () => {
