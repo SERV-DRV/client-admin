@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuthStore } from "../../features/auth/store/authStore";
-import defaultAvatarImg from "../../assets/img/avatarDefault.png";
+import defaultAvatarImg from "../../assets/img/defaultAvatarImg.png";
 
 export const AvatarUser = () => {
 

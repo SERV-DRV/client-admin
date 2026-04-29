@@ -1,11 +1,13 @@
 import imgLogo from "../../../assets/img/kinal_sports.png";
-import { AvatarUser } from "../../ui/AvatarUser";
+import { AvatarUser } from "../../ui/AvatarUser.jsx";
 
+/*
+  Navbar.jsx: Este componente representa la barra de navegación superior de la aplicación.
+*/
 export const Navbar = () => {
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        
         {/* Logo + título */}
         <div className="flex items-center gap-2">
           <img

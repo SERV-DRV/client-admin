@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { toast } from "react-hot-toast"
- 
-import { login as loginRequest } from "../../../shared/api/auth.js"
- 
+
+import { login as loginRequest } from "../../../shared/api/auth.js";
+
 export const useAuthStore = create(
-    persist((set, get)=>({
+    persist((set, get) => ({
         user: null,
         token: null,
         refreshToken: null,
@@ -14,13 +14,13 @@ export const useAuthStore = create(
         error: null,
         isLoading: true,
         isAuthenticated: false,
- 
-        checkAuth: ()=> {
+
+        checkAuth: () => {
             const token = get().token;
             const role = get().user?.role;
             const isAdmin = role == "ADMIN_ROLE"
- 
-            if(token && !isAdmin){
+
+            if (token && !isAdmin) {
                 set({
                     user: null,
                     token: null,
@@ -32,26 +32,26 @@ export const useAuthStore = create(
                 })
             }
         },
- 
-        logout: ()=>{
+
+        logout: () => {
             set({
                 user: null,
-                    token: null,
-                    refreshToken: null,
-                    expiresAt: null,
-                    isAuthenticated: false
+                token: null,
+                refreshToken: null,
+                expiresAt: null,
+                isAuthenticated: false
             })
         },
- 
-        login: async ({emailOrUsername, password})=>{
+
+        login: async ({ emailOrUsername, password }) => {
             try {
                 set({ loading: true, error: null });
-               
-                const { data } = await loginRequest({emailOrUsername, password})
- 
+
+                const { data } = await loginRequest({ emailOrUsername, password })
+
                 // Sólo administradores pueden iniciar sesión en cliente-admin
                 const role = data?.userDetails?.role;
-                if(role !== "ADMIN_ROLE"){
+                if (role !== "ADMIN_ROLE") {
                     const message = "No tienes permisos para acceder como administrador"
                     set({
                         user: null,
@@ -62,11 +62,11 @@ export const useAuthStore = create(
                         loading: false,
                         error: message,
                     });
- 
+
                     toast.error(message);
-                    return {success: false, error: message};
+                    return { success: false, error: message };
                 }
- 
+
                 set(
                     {
                         user: data.userDetails,
@@ -78,8 +78,8 @@ export const useAuthStore = create(
                         error: null,
                     }
                 );
- 
-                return {success: true}
+
+                return { success: true }
             } catch (error) {
                 const errorMessage = error.response?.data?.message || error.message || "Error al iniciar sesión";
                 set({
@@ -92,10 +92,10 @@ export const useAuthStore = create(
                     error: errorMessage,
                 });
                 toast.error(errorMessage);
-                return {success: false, error: errorMessage};
+                return { success: false, error: errorMessage };
             }
         },
- 
+
     }),
-     {name: "auth-store"})
+        { name: "auth-store" })
 );
