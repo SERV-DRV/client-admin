@@ -2,19 +2,17 @@ import { create } from "zustand";
 import {
     getFields as getFieldsRequest,
     createField as createFieldRequest,
-    updateField as _updateFieldRequest,
-    deleteField as _deleteFieldRequest,
+    updateField as updateFieldRequest,
+    deleteField as deleteFieldRequest,
     getAllReservations as getAllReservationsRequest,
     confirmReservation as confirmReservationRequest,
-} from "../../../shared/api";
+} from "../../../shared/api"; // Revisa que esta ruta apunte bien a tu archivo api.js
 
 /*
-* Este store maneja tanto las canchas como las reservaciones, 
-* ya que están relacionadas y es más eficiente tenerlas juntas.
-* Si el proyecto crece mucho, se podrían separar en stores diferentes.
+* Este store maneja tanto las canchas como las reservaciones.
 */
 
-export const useFieldStore = create((set, get) => ({
+export const useFieldsStore = create((set, get) => ({
     fields: [],
     reservations: [],
     loading: false,
@@ -23,9 +21,7 @@ export const useFieldStore = create((set, get) => ({
     getFields: async () => {
         try {
             set({ loading: true, error: null });
-
             const response = await getFieldsRequest();
-
             set({
                 fields: response.data.data,
                 loading: false,
@@ -41,10 +37,9 @@ export const useFieldStore = create((set, get) => ({
     createField: async (formData) => {
         try {
             set({ loading: true, error: null });
-
             const response = await createFieldRequest(formData);
-
             set({
+                // Agrega la nueva cancha al inicio del arreglo
                 fields: [response.data.data, ...get().fields],
                 loading: false,
             });
@@ -55,7 +50,42 @@ export const useFieldStore = create((set, get) => ({
             });
         }
     },
-    // ...rest of logic
+
+    updateField: async (id, formData) => {
+        try {
+            set({ loading: true, error: null });
+            const response = await updateFieldRequest(id, formData);
+            set({
+                // Actualiza solo la cancha que coincida con el ID
+                fields: get().fields.map((field) => 
+                    field._id === id ? response.data.data : field
+                ),
+                loading: false,
+            });
+        } catch (error) {
+            set({
+                loading: false,
+                error: error.response?.data?.message || "Error al actualizar campo",
+            });
+        }
+    },
+
+    deleteField: async (id) => {
+        try {
+            set({ loading: true, error: null });
+            await deleteFieldRequest(id);
+            set({
+                // Filtra la cancha eliminada para sacarla del estado
+                fields: get().fields.filter((field) => field._id !== id),
+                loading: false,
+            });
+        } catch (error) {
+            set({
+                loading: false,
+                error: error.response?.data?.message || "Error al eliminar campo",
+            });
+        }
+    },
 
     getAllReservations: async () => {
         try {
@@ -67,8 +97,7 @@ export const useFieldStore = create((set, get) => ({
             });
         } catch (error) {
             set({
-                error:
-                    error.response?.data?.message || "Error al obtener reservaciones",
+                error: error.response?.data?.message || "Error al obtener reservaciones",
                 loading: false,
             });
         }
@@ -83,8 +112,7 @@ export const useFieldStore = create((set, get) => ({
             set({ loading: false });
         } catch (error) {
             set({
-                error:
-                    error.response?.data?.message || "Error al confirmar reservación",
+                error: error.response?.data?.message || "Error al confirmar reservación",
                 loading: false,
             });
         }

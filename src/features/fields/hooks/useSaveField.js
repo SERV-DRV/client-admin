@@ -1,6 +1,6 @@
 import {useFieldStore } from "../../users/store/adminStore";
 
-export const useSavedField = () => {
+export const useSaveField = () => {
 
     // Recuperación de funciones para el hook
     const createField = useFieldStore((state) => state.createField);
@@ -22,6 +22,8 @@ export const useSavedField = () => {
 
         if (fieldId) {
             await updateField(fieldId, formData);
+        } else {
+            await createField(formData);
         }
     }
 

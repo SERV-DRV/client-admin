@@ -36,6 +36,34 @@ export const showError = (message) =>
         },
     });
 
+    export const showErrorToast = (message) =>
+    toast.error(message, {
+        style: {
+            ...baseStyle,
+            background: "linear-gradient(90deg, #ef4444 0%, #b91c1c 100%)",
+            color: "#fff",
+            border: "2px solid #ef4444",
+        },
+        iconTheme: {
+            primary: "#ef4444",
+            secondary: "#fff",
+        },
+    });
+
+    export const showSuccessToast  = (message) =>
+    toast.success(message, {
+        style: {
+            ...baseStyle,
+            background: "linear-gradient(90deg, #ef4444 0%, #b91c1c 100%)",
+            color: "#fff",
+            border: "2px solid #ef4444",
+        },
+        iconTheme: {
+            primary: "#ef4444",
+            secondary: "#fff",
+        },
+    });
+
 export const showInfo = (message) =>
     toast(message, {
         style: {

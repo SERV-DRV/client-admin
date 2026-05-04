@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 
-import { useFieldsStore } from "../../users/store/adminStore";
+import { useFieldStore } from "../../users/store/adminStore";
 import { Spinner } from "../../auth/components/Spinner";
 import { FieldModal } from "./FieldModal";
 import { useModal } from "../../../shared/ui/hooks/useModal";
 
 export const Fields = () => {
-    const { fields, loading, error, getFields } = useFieldsStore();
+    const { fields, loading, error, getFields } = useFieldStore();
     const { isOpen, openModal, closeModal } = useModal();
 
     useEffect(() => {
