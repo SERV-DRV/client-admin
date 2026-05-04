@@ -1,4 +1,4 @@
-export const Fields = () => {
+    export const Fields = () => {
     return (
         <div className="p-4">
             {/* HEADER */}

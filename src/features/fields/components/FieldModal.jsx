@@ -1,6 +1,70 @@
+import {use, useEffect,useState } from "react";
+import { set, useForm } from "react-hook-form";
+
+import { useSaveField } from "../hooks/useSaveField";
+
+import { spinner } from "../../../assets";
+import { useFieldsStore } from "../../users/store/adminStore";
+import { showSuccessToast, showErrorToast } from "../../../shared/ui/toast";
 import { Modal } from "../../../shared/ui/Modal";
 
 export const FieldModal = ({ isOpen, onClose }) => {
+
+    //Formulario
+    const {
+        register,
+        handleSubmit,
+        reset,
+        watch,
+        formState: { errors },
+    } = useForm();
+    
+    const { saveField } = useSaveField();
+    const loading = useFieldsStore((state) => state.loading);
+
+    const [preview, setPreview] = useState(null);
+
+    useEffect(() => {
+        if(isOpen){ 
+            if(field){
+                reset({
+                    fieldName: field.name,
+                    fieldType: field.type,
+                    capacity: field.capacity,
+                    price: field.price,
+                    description: field.description,
+                });
+                setPreview(field.imageUrl);
+            }
+        }
+    }, [isOpen, field, reset]);
+
+    useEffect(() => {
+        const subscription = watch((value, { name, type }) => {
+            if (name === "photo" && value.photo && value.photo[0]) {
+                setPreview(URL.createObjectURL(value.photo[0]));
+            }
+        });
+        return () => subscription.unsubscribe();
+    }, [watch]);
+
+        const onSubmit = async (data) => {
+        try {
+            await saveField(data, field?._id);
+            showSuccessToast(
+                field ? "Campo actualizado exitosamente" : "Campo creado exitosamente"
+            );
+            reset
+            setPreview(null);
+            onClose();
+        } catch (error) {
+            showErrorToast(error.message || "Error al guardar el campo");
+        }
+
+    };
+
+    if (!isOpen) return null;
+
     return (
         <Modal
             isOpen={isOpen}
@@ -100,6 +164,7 @@ export const FieldModal = ({ isOpen, onClose }) => {
                                 className="w-full px-3 py-2 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 
                 hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-200 transition cursor-pointer"
                                 accept="image/*"
+                                {...register("photo")}
                             />
                         </div>
                     </div>

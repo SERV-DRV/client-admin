@@ -1,23 +1,19 @@
-import { useEffect, useState } from "react";
-import { useEffect as useToastEffect} from "react";
+import { useEffect } from "react";
 
 import { useFieldsStore } from "../../users/store/adminStore";
-import { useUIStore } from "../../auth/store/uiStore";
-
-import { showError } from "../../../shared/ui/utils/toast";
 import { Spinner } from "../../auth/components/Spinner";
 import { FieldModal } from "./FieldModal";
-
+import { useModal } from "../../../shared/ui/hooks/useModal";
 
 export const Fields = () => {
-useUIStore
-    const { fields, loading, error, fetchFields } = useFieldsStore();
-    const { openConfirm } = useUIStore();
+    const { fields, loading, error, getFields } = useFieldsStore();
+    const { isOpen, openModal, closeModal } = useModal();
 
-    const [openModal, setOpenModal] = useState(false);
-    const [selectedField, setSelectedField] = useState(null);
+    useEffect(() => {
+        getFields();
+    }, [getFields]);
 
-
+    if (loading) return <Spinner />;
 
     return (
         <div className="p-4">
@@ -40,57 +36,69 @@ useUIStore
                 </button>
             </div>
 
+            {error && (
+                <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                    {error}
+                </div>
+            )}
+
             {/* GRID */}
             <div className="grid sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-
-                {/* CARD */}
-                <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:scale-[1.02]">
-
-                    {/* IMAGEN */}
-                    <div className="w-full h-52 bg-gray-100 flex items-center justify-center">
-                        <img
-                            src="https://via.placeholder.com/300x200"
-                            alt="Campo"
-                            className="max-h-full max-w-full object-contain rounded-t-xl"
-                        />
+                {fields.length === 0 ? (
+                    <div className="col-span-full rounded-xl border border-dashed border-gray-200 bg-white p-10 text-center text-gray-500">
+                        No hay canchas registradas.
                     </div>
+                ) : (
+                    fields.map((field) => (
+                        <div
+                            key={field.id}
+                            className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:scale-[1.02]"
+                        >
+                            <div className="w-full h-52 bg-gray-100 flex items-center justify-center">
+                                <img
+                                    src={field.imageUrl || "https://via.placeholder.com/300x200"}
+                                    alt={field.name || "Campo"}
+                                    className="max-h-full max-w-full object-contain rounded-t-xl"
+                                />
+                            </div>
 
-                    {/* CONTENIDO */}
-                    <div className="p-5">
-                        <h2 className="text-xl font-bold text-main-blue">
-                            Nombre del Campo
-                        </h2>
+                            <div className="p-5">
+                                <h2 className="text-xl font-bold text-main-blue">
+                                    {field.name || "Nombre del Campo"}
+                                </h2>
 
-                        {/* BADGES */}
-                        <div className="flex gap-2 mt-2 flex-wrap">
-                            <span className="px-3 py-1 text-xs rounded-full bg-blue-100 text-blue-700 font-medium">
-                                5 vs 5
-                            </span>
+                                <div className="flex gap-2 mt-2 flex-wrap">
+                                    <span className="px-3 py-1 text-xs rounded-full bg-blue-100 text-blue-700 font-medium">
+                                        {field.capacity || "5 vs 5"}
+                                    </span>
 
-                            <span className="px-3 py-1 text-xs rounded-full bg-green-100 text-green-700 font-medium">
-                                Q100/hora
-                            </span>
+                                    <span className="px-3 py-1 text-xs rounded-full bg-green-100 text-green-700 font-medium">
+                                        Q{field.pricePerHour || 100}/hora
+                                    </span>
+                                </div>
+
+                                <p className="text-sm text-gray-400 mt-2 truncate">
+                                    ID: {field.id}
+                                </p>
+
+                                <div className="flex gap-3 mt-5">
+                                    <button
+                                        className="flex-1 py-2 rounded-lg bg-main-blue text-white font-medium hover:opacity-90 transition"
+                                        onClick={openModal}
+                                    >
+                                        ✏️ Editar
+                                    </button>
+
+                                    <button className="flex-1 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition">
+                                        🗑️ Eliminar
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-
-                        {/* INFO */}
-                        <p className="text-sm text-gray-400 mt-2 truncate">
-                            ID: 123456
-                        </p>
-
-                        {/* BOTONES */}
-                        <div className="flex gap-3 mt-5">
-                            <button className="flex-1 py-2 rounded-lg bg-main-blue text-white font-medium hover:opacity-90 transition" onClick={openModal}>
-                                ✏️ Editar
-                            </button>
-
-                            <button className="flex-1 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition">
-                                🗑️ Eliminar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
+                    ))
+                )}
             </div>
+
             <FieldModal isOpen={isOpen} onClose={closeModal} />
         </div>
     );
