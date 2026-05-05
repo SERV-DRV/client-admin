@@ -85,8 +85,10 @@ return (
                     </div>
  
                     {/* INFO */}
-                    <p className="text-sm text-gray-400 mt-2 truncate">
-                        ID: {field._id}
+
+                    {/*DESCRIPCIÓN */}
+                    <p className="text-sm text-gray-400 mt-1 flex gap-3 mt-5">
+                        {field.description || "Sin descripción"}
                     </p>
  
                     {/* BOTONES */}
