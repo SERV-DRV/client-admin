@@ -1,9 +1,7 @@
-import { Spinner } from "../../auth/components/Spinner.jsx";
+import { Spinner } from "../../auth/components/Spinner";
 import { TeamModal } from "./TeamModal.jsx";
-import { useModal } from "../../../shared/ui/hooks/useModal.js";
 
 export const Teams = () => {
-    const { isOpen, openModal, closeModal } = useModal();
     const loading = false;
 
     if (loading) return <Spinner />;
@@ -21,10 +19,7 @@ export const Teams = () => {
                     </p>
                 </div>
 
-                <button 
-                    onClick={openModal}
-                    className="bg-main-blue px-4 py-2 rounded text-white hover:opacity-90"
-                >
+                <button className="bg-main-blue px-4 py-2 rounded text-white hover:opacity-90">
                     + Agregar Equipo
                 </button>
             </div>
@@ -67,7 +62,7 @@ export const Teams = () => {
 
                         {/* BOTONES */}
                         <div className="flex gap-3 mt-5">
-                            <button className="flex-1 py-2 rounded-lg bg-main-blue text-white font-medium hover:opacity-90 transition" onClick={openModal}>
+                            <button className="flex-1 py-2 rounded-lg bg-main-blue text-white font-medium hover:opacity-90 transition">
                                 ✏️ Editar
                             </button>
 
@@ -101,7 +96,7 @@ export const Teams = () => {
                         </p>
 
                         <div className="flex gap-3 mt-5">
-                            <button className="flex-1 py-2 rounded-lg bg-main-blue text-white font-medium" onClick={openModal}>
+                            <button className="flex-1 py-2 rounded-lg bg-main-blue text-white font-medium">
                                 ✏️ Editar
                             </button>
 
@@ -114,8 +109,8 @@ export const Teams = () => {
 
             </div>
 
-            {/* MODAL */}
-            <TeamModal isOpen={isOpen} onClose={closeModal} />
+            {/* MODAL (siempre visible en UI pura) */}
+            <TeamModal />
         </div>
     );
 };

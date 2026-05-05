@@ -1,58 +1,62 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { toast } from "react-hot-toast"
+import toast from 'react-hot-toast';
 
-import { login as loginRequest } from "../../../shared/api/auth.js";
+import { 
+    login as loginRequest
+} from "../../../shared/api";
+
 
 export const useAuthStore = create(
-    persist((set, get) => ({
-        user: null,
-        token: null,
-        refreshToken: null,
-        expiresAt: null,
-        loading: false,
-        error: null,
-        isLoading: true,
-        isAuthenticated: false,
+    persist(
+        (set, get)=>({
+            user: null,
+            token: null,
+            refreshToken: null,
+            expiresAt: null,
+            loading: false,
+            error: null,
+            isLoadingAuth: true,
+            isAuthenticated: false,
 
-        checkAuth: () => {
-            const token = get().token;
-            const role = get().user?.role;
-            const isAdmin = role == "ADMIN_ROLE"
+            checkAuth: ()=> {
+                const token = get().token;
+                const role = get().user?.role;
+                const isAdmin = role === "DAMIN_ROLE";
 
-            if (token && !isAdmin) {
+                if(token && !isAdmin){
+                    set({
+                        user:null,
+                        token: null,
+                        refreshToken: null,
+                        expiresAt: null,
+                        isAuthenticated:false,
+                        isLoadingAuth:false,
+                        erro: "No tienes permiso para acceder como administrador"
+                    })
+                }
+            },
+            
+            logout: ()=>{
                 set({
                     user: null,
                     token: null,
                     refreshToken: null,
                     expiresAt: null,
                     isAuthenticated: false,
-                    isLoadingAuth: false,
-                    error: "No tienes permiso para acceder como administrador"
                 })
-            }
-        },
+            },
 
-        logout: () => {
-            set({
-                user: null,
-                token: null,
-                refreshToken: null,
-                expiresAt: null,
-                isAuthenticated: false
-            })
-        },
+            // ----------------------------------------------------------------
+            login: async ({emailOrUsername, password})=>{
 
-        login: async ({ emailOrUsername, password }) => {
-            try {
-                set({ loading: true, error: null });
-
-                const { data } = await loginRequest({ emailOrUsername, password })
-
-                // Sólo administradores pueden iniciar sesión en cliente-admin
+                const { data } = await loginRequest({emailOrUsername, password})
+                
+                // Sólo administradores pueden inciar sesión en cliente-admin
                 const role = data?.userDetails?.role;
-                if (role !== "ADMIN_ROLE") {
-                    const message = "No tienes permisos para acceder como administrador"
+                if(role !== "ADMIN_ROLE"){
+                    const message = "No tienes permisos para acceder como administrador";
+                    
                     set({
                         user: null,
                         token: null,
@@ -64,7 +68,7 @@ export const useAuthStore = create(
                     });
 
                     toast.error(message);
-                    return { success: false, error: message };
+                    return {succes: false, error: message};
                 }
 
                 set(
@@ -75,27 +79,14 @@ export const useAuthStore = create(
                         expiresAt: data.expiresIn || data.expiresAt,
                         isAuthenticated: true,
                         loading: false,
-                        error: null,
                     }
                 );
+                
+                return {succes: true}
 
-                return { success: true }
-            } catch (error) {
-                const errorMessage = error.response?.data?.message || error.message || "Error al iniciar sesión";
-                set({
-                    user: null,
-                    token: null,
-                    refreshToken: null,
-                    expiresAt: null,
-                    isAuthenticated: false,
-                    loading: false,
-                    error: errorMessage,
-                });
-                toast.error(errorMessage);
-                return { success: false, error: errorMessage };
-            }
-        },
-
-    }),
-        { name: "auth-store" })
+            },
+            // ----------------------------------------------------------------
+        }),
+        {name: "auth-store"}
+    )
 );
