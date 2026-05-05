@@ -1,27 +1,32 @@
 import { useEffect, useState } from "react";
-
+import { useEffect as useToastEffect } from "react";
+ 
 import { useFieldsStore } from "../../users/store/adminStore";
 import { useUIStore } from "../../auth/store/uiStore";
-
+ 
 import { showError } from "../../../shared/utils/toast"
+import { spinner } from "@material-tailwind/react";
 import { FieldModal } from "./FieldModal";
-
-
+import { showConfirmToast } from "../../auth/components/ConfirmModal";
+import { deleteField } from "../../../shared/api";
+ 
+ 
 export const Fields = () => {
-    const { fields, loading, error, getFields, deleteField } = useFieldsStore();
+useUIStore
+    const { fields, loading, error, getFields } = useFieldsStore();
     const { openConfirm } = useUIStore();
-
+ 
     const [openModal, setOpenModal] = useState(false);
     const [selectField, setSelectField] = useState(null);
-
+ 
     useEffect(()=>{
         getFields();
     }, [getFields]);
-
-    useEffect(() => {
+ 
+    useToastEffect(() => {
         if (error) showError(error);
     }, [error]);
-    
+   
 return (
         <div className="p-4">
             {/* HEADER */}
@@ -34,8 +39,8 @@ return (
                         Administra las canchas registradas
                     </p>
                 </div>
-
-                <button 
+ 
+                <button
                     className="bg-main-blue px-4 py-2 rounded text-white hover:opacity-90 transition"
                     onClick={()=>{
                         setSelectField(null);
@@ -45,23 +50,8 @@ return (
                     + Agregar Campo
                 </button>
             </div>
-
-            {/* LOADING STATE */}
-            {loading && (
-                <div className="flex justify-center items-center h-40">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-main-blue"></div>
-                </div>
-            )}
-
-            {/* EMPTY STATE */}
-            {!loading && fields.length === 0 && (
-                <div className="text-center py-12">
-                    <p className="text-gray-500 text-lg">No hay canchas registradas</p>
-                </div>
-            )}
-
+ 
             {/* GRID RESPONSIVE */}
-            {!loading && fields.length > 0 && (
             <div className="grid sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {fields.map((field) => (
                 <div
@@ -71,34 +61,34 @@ return (
                     {/* IMAGEN */}
                     <div className="w-full h-52 bg-gray-100 flex items-center justify-center">
                     <img
-                        src={`https://res.cloudinary.com/drafrahtw/image/upload/v1770050460/kinalSports/${field.photo}`}
+                        src={`https://res.cloudinary.com/drafrahtw/image/upload/v1777999389/kinal_sports/${field.photo}`}
                         alt={field.fieldName}
                         className="max-h-full max-w-full object-contain rounded-t-xl"
                     />
                     </div>
-
+ 
                     {/* CONTENIDO */}
                     <div className="p-5">
                     <h2 className="text-xl font-bold text-main-blue">
                         {field.fieldName}
                     </h2>
-
+ 
                     {/* BADGES */}
                     <div className="flex gap-2 mt-2 flex-wrap">
                         <span className="px-3 py-1 text-xs rounded-full bg-blue-100 text-blue-700 font-medium">
                         {field.capacity.replace("_", " ")}
                         </span>
-
+ 
                         <span className="px-3 py-1 text-xs rounded-full bg-green-100 text-green-700 font-medium">
                         Q{field.pricePerHour}/hora
                         </span>
                     </div>
-
+ 
                     {/* INFO */}
                     <p className="text-sm text-gray-400 mt-2 truncate">
                         ID: {field._id}
                     </p>
-
+ 
                     {/* BOTONES */}
                     <div className="flex gap-3 mt-5">
                         <button
@@ -110,14 +100,19 @@ return (
                         >
                         ✏️ Editar
                         </button>
-
+ 
                         <button
                         className="flex-1 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition"
-                        onClick={() => {
-                            if (window.confirm(`¿Estás seguro de eliminar ${field.fieldName}?`)) {
-                                deleteField(field._id);
-                            }
-                        }}
+                        onClick={() =>
+                            showConfirmToast({
+                                title: "Eliminar campo",
+                                message: `¿Eliminar ${field.fieldName}?`,
+                                onConfirm: () => {
+                                  console.log("CONFIRM EJECUTADO");
+                                  deleteField(field._id);
+                                }
+                            })
+                        }
                         >
                         🗑️ Eliminar
                         </button>
@@ -126,8 +121,7 @@ return (
                 </div>
                 ))}
             </div>
-            )}
-
+ 
             {/* COMPONENTE MODAL */}
             <FieldModal
             isOpen={openModal}

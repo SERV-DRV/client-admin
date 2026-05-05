@@ -4,7 +4,7 @@ import { useFieldsStore } from "../../users/store/adminStore";
 import { Spinner } from "../../auth/components/Spinner.jsx";
 import { useSaveField } from "../../fields/hooks/useSaveField";
 import { showSuccess, showError } from "../../../shared/utils/toast.js";
-
+ 
 export const FieldModal = ({ isOpen, onClose, field }) => {
   const {
     register,
@@ -13,12 +13,12 @@ export const FieldModal = ({ isOpen, onClose, field }) => {
     watch,
     formState: { errors },
   } = useForm();
-
+ 
   const { saveField } = useSaveField();
   const loading = useFieldsStore((state) => state.loading);
-
+ 
   const [preview, setPreview] = useState(null);
-
+ 
   useEffect(() => {
     if (isOpen) {
       if (field) {
@@ -26,10 +26,13 @@ export const FieldModal = ({ isOpen, onClose, field }) => {
           fieldName: field.fieldName,
           fieldType: field.fieldType,
           capacity: field.capacity,
+         
           pricePerHour: field.pricePerHour,
           description: field.description,
         });
-        setPreview(field.photo);
+        setPreview(
+          `https://res.cloudinary.com/drafrahtw/image/upload/v1777999389/kinal_sports/${field.photo}`
+        );
       } else {
         reset({
           fieldName: "",
@@ -43,7 +46,7 @@ export const FieldModal = ({ isOpen, onClose, field }) => {
       }
     }
   }, [isOpen, field, reset]);
-
+ 
   useEffect(() => {
     // Use subscription pattern to avoid memoization issues
     // eslint-disable-next-line react-hooks/incompatible-library
@@ -54,7 +57,7 @@ export const FieldModal = ({ isOpen, onClose, field }) => {
     });
     return () => subscription.unsubscribe();
   }, [watch]);
-
+ 
   const onSubmit = async (data) => {
     try {
       await saveField(data, field?._id);
@@ -70,9 +73,9 @@ export const FieldModal = ({ isOpen, onClose, field }) => {
       showError("Error al guardar el campo");
     }
   };
-
+ 
   if (!isOpen) return null;
-
+ 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 px-3 sm:px-4">
       {/* CONTENEDOR */}
@@ -92,7 +95,7 @@ export const FieldModal = ({ isOpen, onClose, field }) => {
             Completa la información de la cancha
           </p>
         </div>
-
+ 
         {/* FORM */}
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -110,7 +113,7 @@ export const FieldModal = ({ isOpen, onClose, field }) => {
               )}
             </div>
           </div>
-
+ 
           {/* INPUTS */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Nombre */}
@@ -119,7 +122,7 @@ export const FieldModal = ({ isOpen, onClose, field }) => {
                 Nombre del campo
               </label>
               <input
-                className="w-full px-3 py-2 rounded-lg border-2 border-gray-300 bg-gray-50 shadow-sm 
+                className="w-full px-3 py-2 rounded-lg border-2 border-gray-300 bg-gray-50 shadow-sm
                                 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
                 placeholder="Ej. Cancha Central"
                 {...register("fieldName", {
@@ -136,14 +139,14 @@ export const FieldModal = ({ isOpen, onClose, field }) => {
                 </p>
               )}
             </div>
-
+ 
             {/* Tipo */}
             <div className="flex flex-col">
               <label className="text-sm font-semibold text-gray-700 mb-1">
                 Tipo de cancha
               </label>
               <select
-                className="w-full px-3 py-2 rounded-lg border-2 border-gray-300 bg-gray-50 shadow-sm 
+                className="w-full px-3 py-2 rounded-lg border-2 border-gray-300 bg-gray-50 shadow-sm
                                 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
                 {...register("fieldType", {
                   required: "El tipo es obligatorio",
@@ -160,14 +163,14 @@ export const FieldModal = ({ isOpen, onClose, field }) => {
                 </p>
               )}
             </div>
-
+ 
             {/* Capacidad */}
             <div className="flex flex-col">
               <label className="text-sm font-semibold text-gray-700 mb-1">
                 Capacidad
               </label>
               <select
-                className="w-full px-3 py-2 rounded-lg border-2 border-gray-300 bg-gray-50 shadow-sm 
+                className="w-full px-3 py-2 rounded-lg border-2 border-gray-300 bg-gray-50 shadow-sm
                                 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
                 {...register("capacity", {
                   required: "La capacidad es obligatoria",
@@ -184,7 +187,7 @@ export const FieldModal = ({ isOpen, onClose, field }) => {
                 </p>
               )}
             </div>
-
+ 
             {/* Precio */}
             <div className="flex flex-col">
               <label className="text-sm font-semibold text-gray-700 mb-1">
@@ -192,7 +195,7 @@ export const FieldModal = ({ isOpen, onClose, field }) => {
               </label>
               <input
                 type="number"
-                className="w-full px-3 py-2 rounded-lg border-2 border-gray-300 bg-gray-50 shadow-sm 
+                className="w-full px-3 py-2 rounded-lg border-2 border-gray-300 bg-gray-50 shadow-sm
                                 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
                 placeholder="Q100"
                 {...register("pricePerHour", {
@@ -206,14 +209,14 @@ export const FieldModal = ({ isOpen, onClose, field }) => {
                 </p>
               )}
             </div>
-
+ 
             {/* Descripción */}
             <div className="flex flex-col md:col-span-2">
               <label className="text-sm font-semibold text-gray-700 mb-1">
                 Descripción
               </label>
               <textarea
-                className="w-full px-3 py-2 rounded-lg border-2 border-gray-300 bg-gray-50 shadow-sm 
+                className="w-full px-3 py-2 rounded-lg border-2 border-gray-300 bg-gray-50 shadow-sm
                                 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
                 placeholder="Detalles del campo..."
                 {...register("description", {
@@ -226,7 +229,7 @@ export const FieldModal = ({ isOpen, onClose, field }) => {
                 </p>
               )}
             </div>
-
+ 
             {/* Imagen */}
             <div className="flex flex-col md:col-span-2">
               <label className="text-sm font-semibold text-gray-700 mb-1">
@@ -234,14 +237,14 @@ export const FieldModal = ({ isOpen, onClose, field }) => {
               </label>
               <input
                 type="file"
-                className="w-full px-3 py-2 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 
+                className="w-full px-3 py-2 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50
                                 hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-200 transition cursor-pointer"
                 accept="image/*"
                 {...register("photo")}
               />
             </div>
           </div>
-
+ 
           {/* BOTONES */}
           <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4 border-t">
             <button
@@ -255,7 +258,7 @@ export const FieldModal = ({ isOpen, onClose, field }) => {
             >
               Cancelar
             </button>
-
+ 
             <button
               type="submit"
               className="w-full sm:w-auto px-5 py-2 rounded-lg text-white font-medium transition shadow"
@@ -279,3 +282,4 @@ export const FieldModal = ({ isOpen, onClose, field }) => {
     </div>
   );
 };
+ 
